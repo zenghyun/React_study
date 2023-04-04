@@ -18,3 +18,4 @@ const CourseGoalItem = props => {
 };
 
 export default CourseGoalItem;
+
