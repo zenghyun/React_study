@@ -70,7 +70,9 @@ useReducer는 다음과 같은 상황에서 사용합니다.
 
 <br>
 
-### useContext 
+### useContext :
+
+[useContext란?](https://despiteallthat.tistory.com/184)
 
 useContext는 React 컴포넌트에서 전역적으로 사용할 수 있는 상태(state)를 다루는 Hook입니다.
 useContext는 createContext 함수를 이용하여 상태를 생성하고, 해당 상태를 여러 컴포넌트에서 사용할 수 있습니다.
@@ -105,3 +107,69 @@ const value = useContext(MyContext);
 
 - useContext는 매개변수로 상태를 받아서, 해당 상태를 반환합니다.
 - 만약 해당 상태가 Provider 컴포넌트에서 제공되지 않았을 경우, createContext 함수에서 설정한 defaultValue를 반환합니다.
+
+<br>
+
+### useMemo :
+
+useMemo는 React 컴포넌트에서 계산 비용이 큰 연산을 최적화하는 데 사용되는 Hook입니다.
+useMemo는 이전에 계산된 값을 기억하고, 해당 값이 변경되지 않은 경우에는 이전 값을 재사용합니다.
+
+useMemo는 다음과 같은 상황에서 사용합니다.
+- 계산 비용이 큰 연산을 수행할 때
+- 연산 결과가 동일한 경우에는 이전 결과를 재사용하고 싶을 때
+
+**useMemo 사용법**
+
+```javascript
+const memoizedValue = useMemo(() => {
+  // 계산 비용이 큰 연산 수행
+  return calculatedValue;
+}, [dependencyArray]);
+
+```
+
+- useMemo는 매개변수로 콜백 함수와 의존성 배열(dependencyArray)을 받습니다.
+- 콜백 함수는 useMemo가 최적화할 연산을 수행하고, 해당 연산의 결과를 반환합니다.
+- <mark>의존성 배열은 useMemo가 해당 배열에 포함된 값들이 변경되었을 때에만 연산을 다시 수행하도록 합니다.</mark>
+
+<br>
+
+### useCallback : 
+
+useCallback은 React 컴포넌트에서 함수를 메모이제이션하여 성능을 최적화하는 데 사용되는 Hook입니다.
+useCallback은 이전에 생성된 함수를 기억하고, 해당 함수를 재사용합니다.
+
+useCallback은 다음과 같은 상황에서 사용합니다.
+
+- 자식 컴포넌트에 전달하는 함수가 불필요하게 재생성되는 것을 방지하고 싶을 때
+- 렌더링이 자주 발생하는 컴포넌트에서 함수를 최적화하고 싶을 때
+
+**useCallback 사용법**
+
+```javascript
+const memoizedCallback = useCallback(() => {
+  // 함수 로직
+}, [dependencyArray]);
+
+```
+
+- useCallback은 매개변수로 콜백 함수와 의존성 배열(dependencyArray)을 받습니다.
+- 콜백 함수는 useCallback이 메모이제이션할 함수를 정의하고, 해당 함수를 반환합니다.
+- 의존성 배열은 useCallback이 해당 배열에 포함된 값들이 변경되었을 때에만 새로운 함수를 생성하도록 합니다.
+
+<br>
+
+### useMemo vs useCallback 
+
+<br>
+
+- useMemo는 계산 비용이 큰 연산의 결과를 메모이제이션하여 재사용하고, useCallback은 함수를 메모이제이션하여 재사용합니다.
+- useMemo는 연산 결과를 반환하고, useCallback은 함수를 반환합니다.
+- useMemo는 값을 메모이제이션하고, useCallback은 함수를 메모이제이션합니다.
+- useMemo는 값을 계산하는 로직을 콜백 함수에 작성하고, useCallback은 함수를 생성하는 로직을 콜백 함수에 작성합니다.
+- useMemo는 계산 비용이 큰 연산을 최적화하는 데 사용됩니다. 예를 들어, 배열이나 객체와 같은 큰 데이터를 가공하거나 복잡한 계산을 수행하는 경우에 사용됩니다.
+- useCallback은 자주 렌더링되는 컴포넌트에서 함수를 최적화하고, 불필요한 함수 재생성을 방지하는 데 사용됩니다. 예를 들어, 자식 컴포넌트에 전달되는 콜백 함수를 최적화하고 싶은 경우에 사용됩니다.
+- 의존성 배열(dependencyArray)을 사용하여 어떤 값이 변경되었을 때에만 메모이제이션된 값이나 함수를 갱신하도록 설정할 수 있습니다. 이를 통해 불필요한 갱신을 방지하고, 성능을 향상시킬 수 있습니다.
+- useMemo와 useCallback은 렌더링 결과에 영향을 주지 않는 경우에는 불필요한 메모이제이션을 방지하고, 최적화를 위해 사용되어야 합니다.
+- useMemo와 useCallback은 성능 최적화를 위한 강력한 도구로 사용되며, 필요에 따라 적절하게 사용하여 React 애플리케이션의 성능을 향상시킬 수 있습니다.
