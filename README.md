@@ -85,7 +85,7 @@ useContext는 다음과 같은 상황에서 사용합니다.
 
 useContext 사용법 
 
-1. createContext 함수를 이요하여 상태를 생성합니다.
+1. createContext 함수를 이용하여 상태를 생성합니다.
 
 ```javascript
 const MyContext = React.createContext(defaultValue);
@@ -130,7 +130,7 @@ const memoizedValue = useMemo(() => {
 ```
 
 - useMemo는 매개변수로 콜백 함수와 의존성 배열(dependencyArray)을 받습니다.
-- 콜백 함수는 useMemo가 최적화할 연산을 수행하고, 해당 연산의 결과를 반환합니다.
+- 콜백 함수는 useMemo가 최적화 할 연산을 수행하고, 해당 연산의 결과를 반환합니다.
 - <mark>의존성 배열은 useMemo가 해당 배열에 포함된 값들이 변경되었을 때에만 연산을 다시 수행하도록 합니다.</mark>
 
 <br>
