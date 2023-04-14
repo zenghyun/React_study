@@ -34,4 +34,272 @@
 ### Firebase
 
 [firebase](https://firebase.google.com/?hl=ko)
-코드 작성 없이도 사용 가능한 무료 백엔드 
+코드 작성 없이도 사용 가능한 무료 백엔드
+
+
+<br>
+
+
+# SWAPI 이용하여 movieList 생성하기
+
+```javascript
+  import React, { useState, useCallback, useEffect } from "react";
+
+  import MovieList2 from "./components/MoviesList2";
+import "./App.css";
+
+const App2 = () => {
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMoviesHandler = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("https://swapi.dev/api/films/");
+      if(!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+      const datas = await response.json();
+      const loadedMovies = datas.results.map((data) => ({
+        id: data.episode_id,
+        title: data.title,
+        openingText: data.opening_crawl,
+        releaseDate: data.rease_date,
+      }));
+      setMovies(loadedMovies);
+    } catch (error) {
+      setError(error.message);
+    }
+    setIsLoading(false);
+  },[]);
+
+  useEffect(() => {
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
+
+  let content = <p>Found no movies</p>;
+
+  if(movies.length > 0) {
+    content = < MovieList2 movies={movies} />
+  }
+
+  if (error) {
+    content = <p>{error}</p>
+  }
+
+  if (isLoading) {
+    content = <p>Loading...</p>
+  }
+
+  return (
+    <React.Fragment>
+      <section></section>
+      <section>
+        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+      </section>
+      <section>{content}</section>
+    </React.Fragment>
+  );
+};
+
+export default App2;
+
+```
+
+<br>
+
+## 📌  핵심 
+
+```javascript
+ const response = await fetch("https://swapi.dev/api/films/");
+```
+
+**SWAPI**를 통해 데이터를 받아온다. 
+
+```javascript
+  useEffect(() => {
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
+```
+
+useEffect를 사용하여 button을 누르지 않아도 페이지 로드 시 자동으로 fetchfmf 사용하여 movieList를 뿌려준다.
+
+```javascript
+ const fetchMoviesHandler = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("https://swapi.dev/api/films/");
+      if(!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+      const datas = await response.json();
+      const loadedMovies = datas.results.map((data) => ({
+        id: data.episode_id,
+        title: data.title,
+        openingText: data.opening_crawl,
+        releaseDate: data.rease_date,
+      }));
+      setMovies(loadedMovies);
+    } catch (error) {
+      setError(error.message);
+    }
+    setIsLoading(false);
+  },[]);
+```
+
+useCallback을 사용하여 **fetchMovieHandler**의 재사용을 방지한다.
+
+<br>
+
+# firebase 이용하여 movieList 추가하기 & 가져오기 
+
+## **App.js**
+
+```javascript
+  import React, { useState, useCallback, useEffect } from "react";
+
+  import MovieList2 from "./components/MoviesList2";
+import "./App.css";
+import AddMovie2 from "./components/AddMovie2";
+
+const App2 = () => {
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMoviesHandler = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("https://react-http-44000-default-rtdb.firebaseio.com/movies.json");
+      if(!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+      const data = await response.json();
+      const loadedMovies = [];
+
+      for(const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }      
+      setMovies(loadedMovies);
+    } catch (error) {
+      setError(error.message);
+    }
+    setIsLoading(false);
+  },[]);
+
+  useEffect(() => {
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
+
+  const addMovieHandler = async (movie) => {
+    const response = await fetch('https://react-http-44000-default-rtdb.firebaseio.com/movies.json',{
+      method: 'POST',
+      body: JSON.stringify(movie),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    // const data = await response.json();
+  }
+  let content = <p>Found no movies</p>;
+
+  if(movies.length > 0) {
+    content = < MovieList2 movies={movies} />
+  }
+
+  if (error) {
+    content = <p>{error}</p>
+  }
+
+  if (isLoading) {
+    content = <p>Loading...</p>
+  }
+
+  return (
+    <React.Fragment>
+      <section>
+        <AddMovie2 onAddMovie={addMovieHandler}/>
+      </section>
+      <section>
+        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+      </section>
+      <section>{content}</section>
+    </React.Fragment>
+  );
+};
+
+export default App2;
+
+```
+
+<br>
+
+## **AddMovie.js**
+
+```javascript
+import React, { useRef } from 'react';
+
+import classes from './AddMovie.module.css';
+
+const AddMovie2 = (props) => {
+  const titleRef = useRef('');
+  const openingTextRef = useRef('');
+  const releaseDateRef = useRef('');
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const movie =  {
+      title: titleRef.current.value,
+      openingText: openingTextRef.current.value,
+      releaseDate: releaseDateRef.current.value
+    };
+    props.onAddMovie(movie);
+  };
+
+  return (
+    <form onSubmit={submitHandler}>
+        <div className={classes.control}>
+        <label htmlFor='title'>Title</label>
+        <input type='text' id='title' ref={titleRef} />
+      </div>
+      <div className={classes.control}>
+        <label htmlFor='opening-text'>Opening Text</label>
+        <textarea rows='5' id='opening-text' ref={openingTextRef}></textarea>
+      </div>
+      <div className={classes.control}>
+        <label htmlFor='date'>Release Date</label>
+        <input type='text' id='date' ref={releaseDateRef} />
+      </div>
+      <button>Add Movie</button>
+    </form>
+  );
+};
+
+export default AddMovie2;
+```
+
+
+### 📌 핵심
+
+```javascript
+ const response = await fetch("https://react-http-44000-default-rtdb.firebaseio.com/movies.json");
+```
+
+<br>
+
+**https://react-http-44000-default-rtdb.firebaseio.com** 
+- firebase를 통해 생성한 실시간 데이터베이스 주소 
+
+**/movie,json**
+- 데이터 베이스 이름 : movie 
+- 저장 양식 : json 
