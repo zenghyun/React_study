@@ -174,7 +174,7 @@ const App2 = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://react-http-44000-default-rtdb.firebaseio.com/movies.json");
+      const response = await fetch("firebase를 통해 생성한 가상 데이터베이스 주소/movies.json");
       if(!response.ok) {
         throw new Error('Something went wrong!');
       }
@@ -201,7 +201,7 @@ const App2 = () => {
   }, [fetchMoviesHandler]);
 
   const addMovieHandler = async (movie) => {
-    const response = await fetch('https://react-http-44000-default-rtdb.firebaseio.com/movies.json',{
+    const response = await fetch('firebase를 통해 생성한 가상 데이터베이스 주소/movies.json',{
       method: 'POST',
       body: JSON.stringify(movie),
       headers: {
@@ -292,12 +292,12 @@ export default AddMovie2;
 ### 📌 핵심
 
 ```javascript
- const response = await fetch("https://react-http-44000-default-rtdb.firebaseio.com/movies.json");
+ const response = await fetch("firebase를 통해 생성한 가상 데이터베이스 주소/movies.json");
 ```
 
 <br>
 
-**https://react-http-44000-default-rtdb.firebaseio.com** 
+**firebase를 통해 생성한 가상 데이터베이스 주소** 
 - firebase를 통해 생성한 실시간 데이터베이스 주소 
 
 **/movie,json**
