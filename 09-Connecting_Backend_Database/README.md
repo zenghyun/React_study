@@ -300,6 +300,6 @@ export default AddMovie2;
 **firebase를 통해 생성한 가상 데이터베이스 주소** 
 - firebase를 통해 생성한 실시간 데이터베이스 주소 
 
-**/movie,json**
+**/movies.json**
 - 데이터 베이스 이름 : movie 
 - 저장 양식 : json 
